@@ -50,22 +50,19 @@ $maps = array_map((fn () => new \Ds\Map), $inputs);
 $dx = ['U' => 0, 'D' => 0, 'L' => -1, 'R' => 1];
 $dy = ['U' => -1, 'D' => 1, 'L' => 0, 'R' => 0];
 foreach ($inputs as $i => $steps) {
-	$k = 0;
+	$j = 0;
 	$location = new Point;
-	foreach ($steps as $j => $step) {
+	foreach ($steps as $step) {
 		foreach (range(0, $step->distance - 1) as $_) {
 			$location->x += $dx[$step->direction];
 			$location->y += $dy[$step->direction];
-			$maps[$i]->put(clone $location, ++$k);
+			$maps[$i]->put(clone $location, ++$j);
 		}
 	}
 }
 
 $intersections = $maps[0]->intersect($maps[1]);
 $intersections->ksort(function ($a, $b) {
-	if ($a->x == 0 && $a->y == 0 && $b->x == 0 && $b->y == 0) {
-		return INF;
-	}
 	return abs($a->x) + abs($a->y) <=> abs($b->x) + abs($b->y);
 });
 $point = $intersections->first()->key;
