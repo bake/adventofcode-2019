@@ -17,8 +17,7 @@ doubles (x:y:zs) = x == y || doubles(y:zs)
 
 -- Part 2
 doubles' :: Integral a => [a] -> Bool
-doubles' xs = 1 <= length [x | x <- tuples, snd x == 2]
-  where tuples = map (\xs@(x:_) -> (x, length xs)) (group xs)
+doubles' xs = 1 <= length [x | x <- map length (group xs), x == 2]
 
 lists = map digits [248345..746315]
 
