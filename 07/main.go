@@ -56,7 +56,7 @@ func part2(memory []int) (max int) {
 		programs[0].input = append(programs[0].input, 0)
 
 		var halted int
-	run:
+	run: // Named loops don't feel right.
 		for halted < len(programs) {
 			for i, p := range programs {
 				op, err := p.run()
