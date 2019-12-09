@@ -26,8 +26,6 @@ func part1(m map[string]string) int {
 	return d
 }
 
-//  321 is too low.
-// 2603 is too high.
 func part2(m map[string]string, a, b string) int {
 	a, b = m[a], m[b]
 	min := len(m)
