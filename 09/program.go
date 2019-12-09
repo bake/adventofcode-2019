@@ -134,7 +134,6 @@ func (p *program) step() (operation, error) {
 	if c == relative {
 		f = p.at(f) + p.relativeBase
 	}
-	// fmt.Printf("%12s %04d: %d,%d,%d %d,%d,%d %d,%d,%d\n", op, p.ip, a, d, p.at(d), b, e, p.at(e), c, f, p.at(f))
 	switch op {
 	case add:
 		p.set(f, p.at(d)+p.at(e))
