@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"log"
+	"os"
+	"testing"
+)
 
 func TestRun(t *testing.T) {
 	tt := []struct {
@@ -34,5 +38,19 @@ func TestRun(t *testing.T) {
 				t.Fatalf("expected output at position %d to be %d, got %d", i, tc.output[i], out[i])
 			}
 		}
+	}
+}
+
+func BenchmarkRun(b *testing.B) {
+	r, err := os.Open("input.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	memory, err := parseInput(r)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for n := 0; n < b.N; n++ {
+		run(memory, 2)
 	}
 }
