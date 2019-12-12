@@ -52,6 +52,21 @@ func (p point) abs() int {
 	return e
 }
 
+func (p point) zero() bool {
+	return p.x == 0 && p.y == 0 && p.z == 0
+}
+
+type points []point
+
+func (ps points) filter(fn func(point) bool) bool {
+	for _, p := range ps {
+		if !fn(p) {
+			return false
+		}
+	}
+	return true
+}
+
 type object struct{ pos, vel point }
 
 func (o object) String() string {
@@ -72,7 +87,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(part1(moons, 1000))
+	// fmt.Println(part1(moons, 1000))
+	fmt.Println(part2(moons))
 }
 
 func part1(moons []*object, n int) int {
@@ -90,6 +106,42 @@ func part1(moons []*object, n int) int {
 		e += m.pos.abs() * m.vel.abs()
 	}
 	return e
+}
+
+func part2(moons []*object) int {
+	loop := make([]int, 3)
+	for i := 1; ; i++ {
+		for j, m := range moons {
+			m.gravity(moons, j)
+		}
+		for _, m := range moons {
+			m.pos.add(m.vel)
+		}
+
+		// I hate this. Someone should refactor it.
+		if loop[0] == 0 && moons[0].vel.x == 0 && moons[1].vel.x == 0 && moons[2].vel.x == 0 && moons[3].vel.x == 0 {
+			loop[0] = i * 2
+		}
+		if loop[1] == 0 && moons[0].vel.y == 0 && moons[1].vel.y == 0 && moons[2].vel.y == 0 && moons[3].vel.y == 0 {
+			loop[1] = i * 2
+		}
+		if loop[2] == 0 && moons[0].vel.z == 0 && moons[1].vel.z == 0 && moons[2].vel.z == 0 && moons[3].vel.z == 0 {
+			loop[2] = i * 2
+		}
+
+		done := true
+		for _, v := range loop {
+			if v == 0 {
+				done = false
+				break
+			}
+		}
+		if done {
+			break
+		}
+	}
+
+	return lcm(loop[0], loop[1], loop[2])
 }
 
 func parseInput(r io.Reader) (objs []*object, err error) {
