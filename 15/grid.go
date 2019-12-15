@@ -75,8 +75,8 @@ func (t tile) String() string {
 type grid map[point]tile
 
 func (g grid) Bounds() image.Rectangle {
-	min := point{math.MinInt64, math.MaxInt64}
-	max := point{math.MinInt64, math.MaxInt64}
+	min := point{math.MaxInt64, math.MaxInt64}
+	max := point{math.MinInt64, math.MinInt64}
 	for p := range g {
 		if p.x < min.x {
 			min.x = p.x
