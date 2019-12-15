@@ -6,7 +6,7 @@ import (
 	"math"
 )
 
-type point struct{ x, y int64 }
+type point struct{ x, y int }
 
 func (p point) move(d direction) point {
 	q := p
@@ -23,7 +23,7 @@ func (p point) move(d direction) point {
 	return q
 }
 
-type direction int64
+type direction int
 
 const (
 	_ direction = iota
@@ -48,7 +48,7 @@ func (d direction) String() string {
 	}
 }
 
-type tile int64
+type tile int
 
 const (
 	unknown tile = iota
@@ -57,6 +57,8 @@ const (
 	target
 )
 
+// String returns a string representation of the tile. The characters for free
+// and tile *in the unknown* are switched to increase readability.
 func (t tile) String() string {
 	switch t {
 	case unknown:
@@ -92,4 +94,16 @@ func (g grid) Bounds() image.Rectangle {
 		}
 	}
 	return image.Rect(int(min.x), int(min.y), int(max.x)+1, int(max.y)+1)
+}
+
+func (g grid) String() string {
+	var str string
+	b := g.Bounds()
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			str += fmt.Sprint(g[point{int(x), int(y)}])
+		}
+		str += fmt.Sprintln()
+	}
+	return str
 }

@@ -19,6 +19,7 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(part1(mem))
+	fmt.Println(part2(mem, 1_000_000))
 }
 
 // part1 is solved by spaceologies wishful thinking technique, in that it lets
@@ -38,7 +39,7 @@ func part1(mem []int64) int {
 		if err != nil {
 			log.Fatal(err)
 		}
-		next := point(r).move(d)
+		next := r.move(d)
 		switch res[0] {
 		case 0:
 			g[next] = wall
@@ -60,11 +61,11 @@ func bfs(g grid, s point) int {
 		p, queue = queue[0], queue[1:]
 		for d := north; d <= east; d++ {
 			q := p.move(d)
+			if dist, ok := distance[q]; ok && dist < distance[p]+1 {
+				continue
+			}
 			switch g[q] {
 			case free:
-				if dist, ok := distance[q]; ok && dist < distance[p]+1 {
-					continue
-				}
 				distance[q] = distance[p] + 1
 				queue = append(queue, q)
 			case target:
@@ -75,7 +76,67 @@ func bfs(g grid, s point) int {
 	return 0
 }
 
-func draw(g grid, r point) {
+// So a few things happend since I wrote part 1. I had a walk, watched a movie
+// and remembered that there was a second part. So here I am, copying the
+// previous solution and making it even more stupid by ignoring the oxygen
+// source and just give the droid n steps to randomly wander through the maze.
+// But no matter how bad I control the droid, there need to be a working BFS
+// this time. And double check that there are no loops.
+func part2(mem []int64, n int) int {
+	p := newProgram(mem)
+	g, r, o := grid{}, point{}, point{}
+	for i := 0; i < n; i++ {
+		d := direction(1 + rand.Intn(4))
+		p.put(int64(d))
+		res, err := p.take(1)
+		if err != nil {
+			log.Fatal(err)
+		}
+		next := r.move(d)
+		switch res[0] {
+		case 0:
+			g[next] = wall
+		case 1:
+			g[next] = free
+			r = next
+		case 2:
+			g[next] = target
+			r, o = next, next
+		}
+	}
+	return longestPath(g, o)
+}
+
+func longestPath(g grid, p point) int {
+	queue := []point{p}
+	distance := map[point]int{p: 0}
+	for len(queue) > 0 {
+		p, queue = queue[0], queue[1:]
+		// Never seen such awfully named variables in a for loop.
+		for d := north; d <= east; d++ {
+			q := p.move(d)
+			if g[q] == wall {
+				continue
+			}
+			// What? I'm not even comparing the distances I save? Why would I even
+			// store integers instead of empty structs?
+			if _, ok := distance[q]; ok {
+				continue
+			}
+			distance[q] = distance[p] + 1
+			queue = append(queue, q)
+		}
+	}
+	var max int
+	for _, d := range distance {
+		if d > max {
+			max = d
+		}
+	}
+	return max
+}
+
+func draw(g grid, p point) {
 	b := g.Bounds()
 	fmt.Print("\033[H\033[2J")
 	for y := b.Min.Y; y < b.Max.Y; y++ {
@@ -84,11 +145,11 @@ func draw(g grid, r point) {
 				fmt.Print("o")
 				continue
 			}
-			if r.x == int64(x) && r.y == int64(y) {
+			if p.x == x && p.y == y {
 				fmt.Printf("D")
 				continue
 			}
-			fmt.Print(g[point{int64(x), int64(y)}])
+			fmt.Print(g[point{x, y}])
 		}
 		fmt.Println()
 	}

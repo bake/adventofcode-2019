@@ -1,3 +1,3 @@
-module github.com/bake/adventofcode-2019/13
+module github.com/bake/adventofcode-2019/15
 
-go 1.12
+go 1.13
