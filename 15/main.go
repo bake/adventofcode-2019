@@ -47,27 +47,25 @@ func part1(mem []int64) int {
 			r = next
 		case 2:
 			g[next] = target
-			return bfs(g, next, point{})
+			return bfs(g, point{})
 		}
 	}
 }
 
-func bfs(g grid, t, s point) int {
+func bfs(g grid, s point) int {
 	queue := []point{s}
-	known := map[point]struct{}{}
 	distance := map[point]int{}
 	var p point
 	for len(queue) > 0 {
 		p, queue = queue[0], queue[1:]
 		for d := north; d <= east; d++ {
 			q := p.move(d)
-			if _, ok := known[q]; ok {
-				continue
-			}
 			switch g[q] {
 			case free:
+				if dist, ok := distance[q]; ok && dist < distance[p]+1 {
+					continue
+				}
 				distance[q] = distance[p] + 1
-				known[q] = struct{}{}
 				queue = append(queue, q)
 			case target:
 				return distance[p] + 1
