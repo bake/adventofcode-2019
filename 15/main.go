@@ -12,8 +12,6 @@ import (
 )
 
 func main() {
-	// render := flag.Bool("render", false, "Render the game")
-	// flag.Parse()
 	mem, err := parseInput(os.Stdin)
 	if err != nil {
 		log.Fatal(err)
@@ -78,10 +76,11 @@ func bfs(g grid, s point) int {
 
 // So a few things happend since I wrote part 1. I had a walk, watched a movie
 // and remembered that there was a second part. So here I am, copying the
-// previous solution and making it even more stupid by ignoring the oxygen
-// source and just give the droid n steps to randomly wander through the maze.
-// But no matter how bad I control the droid, there need to be a working BFS
-// this time. And double check that there are no loops.
+// previous solution and trying to make it even more stupid by ignoring the
+// oxygen source completely and instead letting the droid take n steps and
+// randomly wander through the maze.
+// But no matter how bad I control the droid, there needs to be a working BFS
+// this time. And someone should double check that there are no loops.
 func part2(mem []int64, n int) int {
 	p := newProgram(mem)
 	g, r, o := grid{}, point{}, point{}
@@ -119,7 +118,8 @@ func longestPath(g grid, p point) int {
 				continue
 			}
 			// What? I'm not even comparing the distances I save? Why would I even
-			// store integers instead of empty structs?
+			// store integers instead of empty structs? As long as there really are no
+			// loops ...
 			if _, ok := distance[q]; ok {
 				continue
 			}
