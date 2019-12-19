@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image"
 	"math"
+	"strings"
 )
 
 type point struct{ x, y int }
@@ -59,5 +60,5 @@ func (g grid) String() string {
 		}
 		str += fmt.Sprintln()
 	}
-	return str
+	return strings.TrimSpace(str)
 }
