@@ -32,7 +32,7 @@ func part1(mem []int64, w, h int64) int64 {
 // part2 tl;dr: bruteforce.
 func part2(mem []int64, w, h int64) int64 {
 	for x := int64(0); ; x++ {
-		for y := int64(0); ; y++ {
+		for y := x; ; y++ {
 			if at(mem, x+w-1, y) == 0 {
 				continue
 			}
